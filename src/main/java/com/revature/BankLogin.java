@@ -1,5 +1,6 @@
 package com.revature;
 import java.util.Scanner;
+import com.revature.BankInfo;
 
 public class BankLogin {
 	
@@ -18,7 +19,7 @@ public class BankLogin {
 		
 		String su = "John";
 		
-		String sp = "boobs";
+		String sp = "sauce";
 		
 		
 		if(!su.equals(username) || !sp.equals(password)) {
