@@ -1,7 +1,7 @@
 package com.revature.controllers;
 import java.util.Scanner;
 
-import com.revature.models.Account;
+import com.revature.services.LoginService;
 
 public class LoginController {
 	
