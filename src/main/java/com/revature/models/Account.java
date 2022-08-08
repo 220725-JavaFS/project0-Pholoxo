@@ -1,59 +1,58 @@
 package com.revature.models; 
 
 public class Account {
-	private String accountId;
-	private String customerId;
+	private int accountID;
+	private int customerID;
 	private String accountType;
 	private String status;
-	private long amount;
+	private double amount;
+	
 	
 	
 	/**
 	 * Constructor of Account Class
-	 * @param accountId
 	 * @param ownerId
 	 * @param accountType
 	 * @param amount
 	 */
-	public Account(String accountId, String customerId, String accountType, String status, long amount) {
+	public Account(int accountID, int customerID, String accounttype, String status, double amount) {
 		super();
-		this.accountId = accountId;
-		this.customerId = customerId;
-		this.accountType = accountType;
-		this.amount = amount;
+		this.setAccountID(accountID);
+		this.setCustomerID(customerID);
+		this.setAccountType(accounttype);
+		this.setStatus(status);
+		this.setAmount(amount);
 	}
-
-
+	
 	/**
-	 * This returns the accountID
-	 * @return
+	 * This is an empty constructor
 	 */
-	public String getAccountId() {
-		return accountId;
+	public Account() {
+		//This is an empty constructor
+	}
+	
+	public int getAccountID() {
+		return accountID;
 	}
 
-	/**
-	 * This sets the accountID
-	 * @param accountId
-	 */
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
 	}
-
+	
 	/**
 	 * This returns the customerID
 	 * @return
 	 */
-	public String getCustomerId() {
-		return customerId;
+	public int getCustomerID() {
+		return customerID;
 	}
 
 	/**
 	 * This sets the customerID
-	 * @param ownerId
+	 * @param customerID
 	 */
-	public void setCustomerId(String ownerId) {
-		this.customerId = ownerId;
+	public void setCustomerID(int customerID) {
+		this.customerID = customerID;
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class Account {
 	 * This returns the amount
 	 * @return
 	 */
-	public long getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
@@ -84,7 +83,7 @@ public class Account {
 	 * This sets the amount
 	 * @param amount
 	 */
-	public void setAmount(long amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 
@@ -104,7 +103,14 @@ public class Account {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}	
+	
+	@Override
+	public String toString() {
+		return "Account [customerID=" + customerID + ", accountType=" + accountType + ", status=" + status + ", amount="
+				+ amount + "]";
 	}
+
 	
-	
+
 }

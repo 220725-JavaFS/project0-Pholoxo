@@ -1,15 +1,13 @@
 package com.revature.models;
-import java.util.Scanner;
 
 public class Customer {
-	private String customerID;
+	private int customerID;
 	private String name;
 	private String password;
 	private String username;
-	private int checking;
-	private int savings;
-	private int investment;
-	private Scanner scan = new Scanner(System.in);
+	private Account checking;
+	private Account savings;
+	private Account investment;
 	
 	/**
 	 * This is the main constructor for customer
@@ -21,17 +19,21 @@ public class Customer {
 	 * @param savings
 	 * @param investment
 	 */
-	public Customer(String customerID, String name, String password, String username, int checking, int savings, int investment) {
+	public Customer(int customerID, String name, String password, String username, Account checking, Account savings, Account investment) {
 		super();
+		
 		this.customerID = customerID;
 		this.name = name;
 		this.password = password;
 		this.username = username;
-		this.setChecking(checking);
-		this.setSavings(savings);
-		this.setInvestment(investment);
+		this.checking = null;
+		this.savings = null;
+		this.investment = null;
+//		
 	}
 	
+	
+
 	/**
 	 * This is an empty constructor
 	 */
@@ -43,18 +45,18 @@ public class Customer {
 	 * This returns the customerID
 	 * @return
 	 */
-	public String getCustomerID() {
+	public int getCustomerID() {
 		return customerID;
 	}
-
+	
 	/**
 	 * This sets the customerID
 	 * @param customerID
 	 */
-	public void setCustomerID(String customerID) {
+	public void setCustomerID(int customerID) {
 		this.customerID = customerID;
 	}
-
+	
 	/**
 	 * This returns the name of the customer
 	 * @return
@@ -103,29 +105,61 @@ public class Customer {
 		this.username = username;
 	}
 	
+	/**
+	 * This returns the checking account
+	 * @return
+	 */
 
-	public int getChecking() {
+	public Account getChecking() {
 		return checking;
 	}
+	
+	/**
+	 * This sets the checking account
+	 * @param checking
+	 */
 
-	public void setChecking(int checking) {
+	public void setChecking(Account checking) {
 		this.checking = checking;
 	}
-
-	public int getSavings() {
+	
+	/**
+	 * This returns the savings account
+	 * @return
+	 */
+	public Account getSavings() {
 		return savings;
 	}
 
-	public void setSavings(int savings) {
+	/**
+	 * This sets the savings account
+	 * @param savings
+	 */
+	public void setSavings(Account savings) {
 		this.savings = savings;
 	}
-
-	public int getInvestment() {
+	
+	/**
+	 * This returns the investment account
+	 * @return
+	 */
+	public Account getInvestment() {
 		return investment;
 	}
 
-	public void setInvestment(int investment) {
+	/**
+	 * This sets the investment account
+	 * @param investment
+	 */
+	public void setInvestment(Account investment) {
 		this.investment = investment;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [customerID=" + customerID + ", name=" + name + ", password=" + password + ", username="
+				+ username + ", checking=" + checking + ", savings=" + savings + ", investment=" + investment + "]";
+	}
+	
 	
 }

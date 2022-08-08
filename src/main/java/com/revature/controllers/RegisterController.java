@@ -7,9 +7,11 @@ public class RegisterController {
 	
 	private Scanner scan = new Scanner(System.in);
 	
-	
+	/**
+	 * This is an empty constructor
+	 */
 	public RegisterController() {
-		
+		// Empty Constructor
 	}
 	
 	public void register() {

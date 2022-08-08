@@ -1,28 +1,21 @@
 package com.revature;
 
-import com.revature.controllers.*;
-import java.util.Scanner;
+import com.revature.controllers.MenuController;
+
 
 public class Driver {
 	
 	
 	public static void main(String[] args) {
-		System.out.println("Hello to Ohara Banking!");
 		
-		Scanner scan = new Scanner(System.in);
+		System.out.println("Welcome to Ohara Banking!");
 		
-	    System.out.println("Do you have an account with us?");
-	    
-	    String answer = scan.nextLine();
-	    
-	    if(answer.equals("yes")) {
-	    	System.out.print("lol");
-	    }
-//		LoginController log = new LoginController();
-//		log.login();
-//		
-//		RegisterController reg = new RegisterController();
+		MenuController menu = new MenuController();
 		
+		menu.mainMenu();
+		
+		System.out.println("Goodbye!");		    
+		        	
 	}
 
 }
