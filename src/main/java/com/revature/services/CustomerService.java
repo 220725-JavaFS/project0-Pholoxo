@@ -2,7 +2,7 @@ package com.revature.services;
 
 import java.util.List;
 
-import com.revature.controllers.CustomerController;
+
 import com.revature.daos.BankDAO;
 import com.revature.daos.BankDAOImpl;
 import com.revature.models.*;
@@ -33,6 +33,7 @@ public class CustomerService {
 				System.out.println(warning);
 			} else {
 				bank.openAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!");
 			}
 			
 			
@@ -42,6 +43,7 @@ public class CustomerService {
 				
 			} else {
 				bank.openAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!");
 			}
 			
 		} else if(accounttype.equals("investment")) {	
@@ -49,6 +51,8 @@ public class CustomerService {
 				System.out.println(warning);
 			} else {
 				bank.openAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!"
+						         + "Your account is now pending for approval");
 			}
 			
 		} 
@@ -67,6 +71,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!");
 			}
 			
 		} else if(accounttype.equals("savings")) {	
@@ -75,6 +80,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!");
 			}
 			
 		} else if(accounttype.equals("investment")) {	
@@ -83,6 +89,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				System.out.println("Transaction processed successfully!");
 			}
 			
 		} 	
@@ -97,28 +104,43 @@ public class CustomerService {
 	 */
 	public void deposit(Customer person, String type, double amount) {
 		if(type.equals("checking")) {
+			if(person.getChecking() == null) {
+				System.out.println("There is no account of this type to deposit into");
+				
+			} else {
+				double first = person.getChecking().getAmount();
+				double total = amount + first;
+				
+				person.getChecking().setAmount(total);
+				bank.deposit(person.getCustomerID(), "checking", total);
+				System.out.println("Transaction processed successfully!");
+			}
+		
 			
-			
-			double first = person.getChecking().getAmount();
-			double total = amount + first;
-			
-			person.getChecking().setAmount(total);
-			bank.deposit(person.getCustomerID(), "checking", total);
-			System.out.println("Transaction processed successfully!");
 		} else if(type.equals("savings")) {
-			double first = person.getSavings().getAmount();
-			double total = amount + first;
+			if(person.getSavings() == null) {
+				System.out.println("There is no account of this type to deposit into");
+			} else{
+				double first = person.getSavings().getAmount();
+				double total = amount + first;
+				
+				person.getSavings().setAmount(total);
+				bank.deposit(person.getCustomerID(), "savings", total);
+				System.out.println("Transaction processed successfully!");
+			}
 			
-			person.getSavings().setAmount(total);
-			bank.deposit(person.getCustomerID(), "savings", total);
-			System.out.println("Transaction processed successfully!");
 		} else if(type.equals("investment")) {
-			double first = person.getInvestment().getAmount();
-			double total = amount + first;
+			if(person.getSavings() == null) {
+				System.out.println("There is no account of this type to deposit into");
+			} else{
+				double first = person.getInvestment().getAmount();
+				double total = amount + first;
+				
+				person.getInvestment().setAmount(total);
+				bank.deposit(person.getCustomerID(), "investment", total);
+				System.out.println("Transaction processed successfully!");
+			}
 			
-			person.getInvestment().setAmount(total);
-			bank.deposit(person.getCustomerID(), "investment", total);
-			System.out.println("Transaction processed successfully!");
 		}
 	}
 	
@@ -130,36 +152,52 @@ public class CustomerService {
 	 */
 	public void withdraw(Customer person, String type, double amount) {
 		if(type.equals("checking")) {
-			double first = person.getChecking().getAmount();
 			
-			if(check(first, amount)) {
-				double total = first - amount;
-				person.getChecking().setAmount(total);
-				bank.withdraw(person.getCustomerID(), "checking", total);
-				System.out.println("Transaction processed successfully!");
+			if(person.getChecking() == null) {
+				System.out.println("There is no account of this type to withdraw from");
+			} else {
+				double first = person.getChecking().getAmount();
+				
+				if(check(first, amount)) {
+					double total = first - amount;
+					person.getChecking().setAmount(total);
+					bank.withdraw(person.getCustomerID(), "checking", total);
+					System.out.println("Transaction processed successfully!");
+				}
 			}
-			
 			
 		} else if(type.equals("savings")) {
-			double first = person.getSavings().getAmount();
 			
-			if(check(first, amount)) {
-				double total = first - amount;
-				person.getChecking().setAmount(total);
-				bank.withdraw(person.getCustomerID(), "savings", total);
-				System.out.println("Transaction processed successfully!");
+			if(person.getSavings() == null) {
+				System.out.println("There is no account of this type to withdraw from");
+			} else {
+				double first = person.getSavings().getAmount();
+				
+				if(check(first, amount)) {
+					double total = first - amount;
+					person.getChecking().setAmount(total);
+					bank.withdraw(person.getCustomerID(), "savings", total);
+					System.out.println("Transaction processed successfully!");
+				}
 			}
-			// SQL add
+			
 		} else if(type.equals("investment")) {
-			double first = person.getInvestment().getAmount();
-	
-			if(check(first, amount)) {
-				double total = first - amount;
-				person.getChecking().setAmount(total);
-				bank.withdraw(person.getCustomerID(), "investment", total);
-				System.out.println("Transaction processed successfully!");
+			
+			if(person.getInvestment() == null ||
+			   !person.getInvestment().getStatus().equals("open")) {
+				System.out.println("There is no account of this type to withdraw from"
+						+ " or the account is denied or not approved yet");
+			} else {
+				double first = person.getInvestment().getAmount();
+				
+				if(check(first, amount)) {
+					double total = first - amount;
+					person.getChecking().setAmount(total);
+					bank.withdraw(person.getCustomerID(), "investment", total);
+					System.out.println("Transaction processed successfully!");
+				}
 			}
-			// SQL add
+			
 		}
 	} 
 	

@@ -1,7 +1,7 @@
 package com.revature.models;
 
 public class Employee {
-	private String employeeID;
+	private int employeeID;
 	private String name;
 	private String password;
 	private String username;
@@ -13,7 +13,7 @@ public class Employee {
 	 * @param password
 	 * @param username
 	 */
-	public Employee(String employeeID, String name, String password, String username) {
+	public Employee(int employeeID, String name, String password, String username) {
 		super();
 		this.employeeID = employeeID;
 		this.name = name;
@@ -25,7 +25,7 @@ public class Employee {
 	 * This returns employeeID
 	 * @return
 	 */
-	public String getEmployeeID() {
+	public int getEmployeeID() {
 		return employeeID;
 	}
 	
@@ -33,7 +33,7 @@ public class Employee {
 	 * This sets employeeID
 	 * @param employeeID
 	 */
-	public void setEmployeeID(String employeeID) {
+	public void setEmployeeID(int employeeID) {
 		this.employeeID = employeeID;
 	}
 	

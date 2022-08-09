@@ -18,7 +18,33 @@ public class BankDAOImpl implements BankDAO{
 
 	@Override
 	public Admin getAdmin(String username, String password) {
-		// TODO Auto-generated method stub
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM admins WHERE username='" + username +
+					     "' AND PASSWORD = '" + password + "';";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			if(result.next()) {
+				
+				Admin admin = new Admin(
+						result.getInt("adminid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("username")
+						);
+				return admin;
+				
+				
+			} else {
+				System.out.println("Wrong username or password");
+				AdminController admi = new AdminController();
+				admi.adminMenu();
+			}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -38,12 +64,21 @@ public class BankDAOImpl implements BankDAO{
 						result.getInt("customerid"),
 						result.getString("name"),
 						result.getString("password"),
-						result.getString("password"),
+						result.getString("username"),
 						null,
 						null,
 						null
 						);
-			
+				List<Account> accountList = getAllAccounts(customer.getCustomerID());
+				for(Account a: accountList) {
+					if(a.getAccountType().equals("checking")) {
+						customer.setChecking(a);
+					}else if(a.getAccountType().equals("savings")) {
+						customer.setSavings(a);
+					}else if(a.getAccountType().equals("investment")) {
+						customer.setInvestment(a);
+					}
+				}
 				return customer;
 			} else {
 				System.out.println("Wrong username or password");
@@ -57,15 +92,43 @@ public class BankDAOImpl implements BankDAO{
 		}
 		return null;
 	}
+	
 
+	
 	@Override
 	public Employee getEmployee(String username, String password) {
-		// TODO Auto-generated method stub
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM employees WHERE username='" + username +
+					     "' AND PASSWORD = '" + password + "';";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			if(result.next()) {
+				
+				Employee employee = new Employee(
+						result.getInt("employeeid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("username")
+						);
+				return employee;
+				
+				
+			} else {
+				System.out.println("Wrong username or password");
+				EmployeeController employ = new EmployeeController();
+				employ.employeeMenu();
+			}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
-	public Account getAccount(int customerID, String accounttype) {
+	public Account getAccountByID(int customerID, String accounttype) {
 		
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM accounts WHERE customerid='" + String.valueOf(customerID) +
@@ -92,7 +155,47 @@ public class BankDAOImpl implements BankDAO{
 		return null;
 	}
 
-	
+	public Customer getCustomerByID(int customerID) {
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM customers WHERE customerid='" + String.valueOf(customerID) + "';";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			if(result.next()) {
+				
+				Customer customer = new Customer(
+						result.getInt("customerid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("username"),
+						null,
+						null,
+						null
+						);
+				List<Account> accountList = getAllAccounts(customer.getCustomerID());
+				for(Account a: accountList) {
+					if(a.getAccountType().equals("checking")) {
+						customer.setChecking(a);
+					}else if(a.getAccountType().equals("savings")) {
+						customer.setSavings(a);
+					}else if(a.getAccountType().equals("investment")) {
+						customer.setInvestment(a);
+					}
+				}
+				return customer;
+			} else {
+				System.out.println("Wrong username or password");
+				CustomerController custom = new CustomerController();
+				custom.customerMenu();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@Override
 	public List<Admin> getAllAdmins() {
@@ -102,7 +205,44 @@ public class BankDAOImpl implements BankDAO{
 
 	@Override
 	public List<Customer> getAllCustomers() {
-		// TODO Auto-generated method stub
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM customers";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			List<Customer> customerList = new LinkedList<Customer>();
+			
+			while(result.next()) { 
+				Customer customer = new Customer(
+						result.getInt("customerid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("password"),
+						null,
+						null,
+						null
+						);
+				List<Account> accountList = getAllAccounts(customer.getCustomerID());
+				for(Account a: accountList) {
+					if(a.getAccountType().equals("checking")) {
+						customer.setChecking(a);
+					}else if(a.getAccountType().equals("savings")) {
+						customer.setSavings(a);
+					}else if(a.getAccountType().equals("investment")) {
+						customer.setInvestment(a);
+					}
+				}
+				customerList.add(customer);
+				
+			}
+			
+			
+			return customerList;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} 
 		return null;
 	}
 
@@ -122,9 +262,7 @@ public class BankDAOImpl implements BankDAO{
 			
 			List<Account> accountList = new LinkedList<Account>();
 			
-			while(result.next()) { //resultSets are cursor based, each time .next is called the cursor moves to the next group of values. 
-				//It starts one before so you always need to call next.
-				
+			while(result.next()) { 
 				Account account = new Account(
 						result.getInt("accountid"),
 						result.getInt("customerid"),
@@ -146,6 +284,38 @@ public class BankDAOImpl implements BankDAO{
 		return null;
 	}
 
+	public List<Account> getTotalAccounts() {
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			List<Account> accountList = new LinkedList<Account>();
+			
+			while(result.next()) { 
+				Account account = new Account(
+						result.getInt("accountid"),
+						result.getInt("customerid"),
+						result.getString("accounttype"),
+						result.getString("status"),
+						result.getDouble("amount")
+						);
+				
+				accountList.add(account);
+				
+			}
+			
+			
+			return accountList;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+	
+	
 	@Override
 	public void deposit(int customerID, String accounttype, double amount) {
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -187,9 +357,7 @@ public class BankDAOImpl implements BankDAO{
 		}
 		
 	}
-
 	
-
 	@Override
 	public void openAccount(int customerID, String accounttype) {
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -236,11 +404,74 @@ public class BankDAOImpl implements BankDAO{
 		
 	}
 
+	@Override
+	public void addCustomer(String name, String password, String username) {
+		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "INSERT INTO customers (name, password, username)"
+					+ "	VALUES (?, ?, ?);";
+			
+			PreparedStatement statement = conn.prepareStatement(sql);
+			
+			int count = 0;
+			statement.setString(++count, name);
+			statement.setString(++count, password);
+			statement.setString(++count, username);
+			
+			statement.execute();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void processedApplication(int accountID, String request) {
+		try(Connection conn = ConnectionUtil.getConnection()){
+			
+			String sql = "UPDATE accounts SET status = '" 
+					     + request + "' WHERE accountid = " 
+					     + String.valueOf(accountID) 
+					     + "';";
+			PreparedStatement statement = conn.prepareStatement(sql);
+
+			
+			statement.execute();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean ifExists(String username) {
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM customers WHERE username='" + username + "';";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			if(result.next()) {
+				
+				Customer customer = new Customer(
+						result.getInt("customerid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("username"),
+						null,
+						null,
+						null
+						);
+				System.out.println("Sorry this person with this username: "
+								+ customer.getUsername() + " already exists");
+			} 
+		} catch (SQLException e) {
+			return false;
+		}
+		return true;
+		
+	}
 	
-
 	
-
-
-
-
+	
 }

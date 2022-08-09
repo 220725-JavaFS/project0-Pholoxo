@@ -30,10 +30,11 @@ public class MenuController {
 						break;
 					case "2":
 						EmployeeController employee = new EmployeeController();
-						
+						employee.employeeMenu();
 						break;
 					case "3":
 						AdminController admin = new AdminController();
+						admin.adminMenu();
 						break;
 					default:
 						System.out.println("Sorry that is not a valid input please try again. ");
@@ -43,6 +44,7 @@ public class MenuController {
 					break;
 			case "2":
 				RegisterController reg = new RegisterController();
+				reg.register();
 				break;
 			case "3":
 				break;

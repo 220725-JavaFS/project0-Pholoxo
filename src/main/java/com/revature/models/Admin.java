@@ -1,7 +1,7 @@
 package com.revature.models;
 
 public class Admin {
-	private String adminID;
+	private int adminID;
 	private String name;
 	private String password;
 	private String username;
@@ -13,7 +13,7 @@ public class Admin {
 	 * @param password
 	 * @param username
 	 */
-	public Admin(String adminID, String name, String password, String username) {
+	public Admin(int adminID, String name, String password, String username) {
 		super();
 		this.adminID = adminID;
 		this.name = name;
@@ -25,7 +25,7 @@ public class Admin {
 	 * This returns the adminID
 	 * @return
 	 */
-	public String getAdminID() {
+	public int getAdminID() {
 		return adminID;
 	}
 	
@@ -33,7 +33,7 @@ public class Admin {
 	 * This sets the adminID
 	 * @param adminID
 	 */
-	public void setAdminID(String adminID) {
+	public void setAdminID(int adminID) {
 		this.adminID = adminID;
 	}
 	

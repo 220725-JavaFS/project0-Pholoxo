@@ -5,7 +5,10 @@ import com.revature.controllers.MenuController;
 
 public class Driver {
 	
-	
+	/**
+	 * This is the driver to start the program
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		System.out.println("Welcome to Ohara Banking!");

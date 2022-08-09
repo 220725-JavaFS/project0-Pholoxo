@@ -40,29 +40,32 @@ public class CustomerController {
 				accounttype = whichAccount(person);
 				money = amount();
 				customerService.deposit(person, accounttype, money);
+				actions(person);
 				break;
 			case "2":
 				accounttype = whichAccount(person);
 				money = amount();
 				customerService.withdraw(person, accounttype, money);
+				actions(person);
 				break;
 			case "3":
 				System.out.print("To ");
 				accounttype = whichAccount(person);
 				System.out.print("From ");
 				String accounttype2 = whichAccount(person);
-				money = amount();
+				money = amount();	
 				customerService.transfer(person, accounttype, accounttype2, money);
+				actions(person);
 				break;
 			case "4":
 				accounttype = whichAccount(person);
 				customerService.closeAccount(person, accounttype);
-				customerMenu();
+				actions(person);
 				break;
 			case "5":
 				accounttype = whichAccount(person);
 				customerService.openAccount(person, accounttype);
-				customerMenu();
+				actions(person);
 				break;
 			case "6":
 				menu.mainMenu();

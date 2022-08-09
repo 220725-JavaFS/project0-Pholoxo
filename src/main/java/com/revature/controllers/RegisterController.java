@@ -1,11 +1,15 @@
 package com.revature.controllers;
 
 import java.util.Scanner;
-import com.revature.models.Customer;
+
+import com.revature.services.RegisterService;
+
 
 public class RegisterController {
 	
 	private Scanner scan = new Scanner(System.in);
+	private RegisterService register = new RegisterService();
+	private MenuController menu = new MenuController();
 	
 	/**
 	 * This is an empty constructor
@@ -27,13 +31,20 @@ public class RegisterController {
 		
 		String user = scan.nextLine();
 		
-		System.out.println("Choose which account to choose from: Checking, Savings, Investment."
-				+ " Please enter exactly the type of account that is shown on this sentence.");
-		String account = scan.nextLine();
+		register.addCustomer(name, pass, user);
 		
-		if(account.toLowerCase().trim().equals("Investment")) {
-			System.out.println("This will be on review");
+		if(ifExists(user)) {
+			register();
 		}
 		
+		System.out.println("Congratulations on registering! You will be rerouted to the main menu.");
+		
+		menu.mainMenu();
+		
+		
+	}
+	
+	public boolean ifExists(String username) {
+		return register.ifExists(username);
 	}
 }

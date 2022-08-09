@@ -103,14 +103,13 @@ public class Account {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
-	}	
-	
-	@Override
-	public String toString() {
-		return "Account [customerID=" + customerID + ", accountType=" + accountType + ", status=" + status + ", amount="
-				+ amount + "]";
 	}
 
+	@Override
+	public String toString() {
+		return "Account [accountID=" + accountID + ", customerID=" + customerID + ", accountType=" + accountType
+				+ ", status=" + status + ", amount=" + amount + "]";
+	}	
 	
 
 }
