@@ -1,6 +1,8 @@
 package com.revature.models; 
 
 public class Account {
+	
+
 	private int accountID;
 	private int customerID;
 	private String accountType;
@@ -112,4 +114,45 @@ public class Account {
 	}	
 	
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + accountID;
+		result = prime * result + ((accountType == null) ? 0 : accountType.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(amount);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + customerID;
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		if (accountID != other.accountID)
+			return false;
+		if (accountType == null) {
+			if (other.accountType != null)
+				return false;
+		} else if (!accountType.equals(other.accountType))
+			return false;
+		if (Double.doubleToLongBits(amount) != Double.doubleToLongBits(other.amount))
+			return false;
+		if (customerID != other.customerID)
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		return true;
+	}
 }
