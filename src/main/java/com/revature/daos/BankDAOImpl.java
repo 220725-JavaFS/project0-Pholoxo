@@ -53,7 +53,7 @@ public class BankDAOImpl implements BankDAO{
 		
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM customers WHERE username='" + username +
-					     "' AND PASSWORD = '" + password + "';";
+					     "' AND password = crypt('" + password + "', password);";
 			
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -409,7 +409,7 @@ public class BankDAOImpl implements BankDAO{
 		
 		try(Connection conn = ConnectionUtil.getConnection()){
 			String sql = "INSERT INTO customers (name, password, username)"
-					+ "	VALUES (?, ?, ?);";
+					+ "	VALUES (?, crypt(?, gen_salt('bf')), ?);";
 			
 			PreparedStatement statement = conn.prepareStatement(sql);
 			
@@ -462,13 +462,12 @@ public class BankDAOImpl implements BankDAO{
 						null,
 						null
 						);
-				System.out.println("Sorry this person with this username: "
-								+ customer.getUsername() + " already exists");
+				return true;
 			} 
 		} catch (SQLException e) {
 			return false;
 		}
-		return true;
+		return false;
 		
 	}
 	

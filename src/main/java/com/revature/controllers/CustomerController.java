@@ -31,7 +31,8 @@ public class CustomerController {
 		        		 + "3. Transfer an amount to different account\n"
 		        		 + "4. Close account\n"
 		        		 + "5. Open account\n"
-		        		 + "6. Quit customer menu\n");
+		        		 + "6. See accounts\n"
+		        		 + "7. Quit customer menu\n");
 		String answer = scan.nextLine();
 		String accounttype = "";
 		double money = 0;
@@ -68,10 +69,16 @@ public class CustomerController {
 				actions(person);
 				break;
 			case "6":
+				seeAccounts(person);
+				actions(person);
+				break;
+			case "7":
 				menu.mainMenu();
 			default:
+				System.out.println(answer);
 				System.out.println("Sorry that is not a valid input please try again. ");
 				actions(person);
+				break;
 			}
 	}
 	
@@ -100,11 +107,9 @@ public class CustomerController {
 	}
 	
 	public double amount() {
-		double money = 0;
 		System.out.println("How much?");
-		money = scan.nextDouble();
-		
-		return money;
+		String money = scan.nextLine().trim();
+		return Double.parseDouble(money);
 	}
 	
 	public void seeAccounts(Customer person) {

@@ -11,7 +11,7 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 		
-		System.out.println("Welcome to Ohara Banking!");
+		System.out.println("Welcome to Krusty Krab Banking!");
 		
 		MenuController menu = new MenuController();
 		

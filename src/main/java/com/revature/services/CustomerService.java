@@ -28,6 +28,7 @@ public class CustomerService {
 	 */
 	public void openAccount(Customer person, String accounttype) {
 		String warning = "This account is already open or pending";
+		
 		if(accounttype.equals("checking")) {
 			if(person.getChecking() != null) {
 				System.out.println(warning);

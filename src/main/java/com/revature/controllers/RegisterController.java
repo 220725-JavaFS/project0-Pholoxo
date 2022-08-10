@@ -31,13 +31,17 @@ public class RegisterController {
 		
 		String user = scan.nextLine();
 		
-		register.addCustomer(name, pass, user);
+		
 		
 		if(ifExists(user)) {
-			register();
+			System.out.println("Sorry this person with this username: "
+					+ user + " already exists");
+			
+		} else {
+			register.addCustomer(name, pass, user);
+			System.out.println("Congratulations on registering! You will be rerouted to the main menu.");
 		}
 		
-		System.out.println("Congratulations on registering! You will be rerouted to the main menu.");
 		
 		menu.mainMenu();
 		
