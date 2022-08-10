@@ -15,6 +15,9 @@ public class AdminController {
 	private AdminService adminService = new AdminService();
 	private CustomerService customerService = new CustomerService();
 	
+	/**
+	 * This is the admin menu
+	 */
 	public void adminMenu() {
 		System.out.print("Enter your username: ");
 		String username = scan.nextLine();
@@ -28,6 +31,9 @@ public class AdminController {
 	}
 	
 
+	/**
+	 * These are the actions to do as admin
+	 */
 	public void actions() {
 		System.out.println("What would you like to do?\n"
        		 + "1. See total customer records\n"
@@ -52,6 +58,7 @@ public class AdminController {
 				break;
 			case "4":
 				seePending();
+				decide();
 				actions();
 				break;
 			case "5":
@@ -68,6 +75,9 @@ public class AdminController {
 		}
 	}
 	
+	/**
+	 * see total customer records
+	 */
 	public void seeCustomerRecords() {
 		List<Customer> list = adminService.seeAllCustomers();
 		System.out.println("Here are the customer records");
@@ -77,6 +87,9 @@ public class AdminController {
 		}
 	}
 	
+	/**
+	 * See total account records
+	 */
 	public void seeAccountRecords() {
 		List<Account> list = adminService.seeAllAccounts();
 		System.out.println("Here are all the financial accounts records");
@@ -85,18 +98,28 @@ public class AdminController {
 		}
 	}
 	
+	/**
+	 * See customer and their accounts
+	 */
 	public void seeCustomerAndAccounts() {
 		System.out.println("Which customer and their accounts do you want to see? \n"
-				          + "Choose by customerid");
-		int id = scan.nextInt();
-		Customer person = adminService.seeCustomer(id);
-		List<Account> list = adminService.seeAccounts(id);
+				          + "Choose by customerID");
+		String id = scan.nextLine();
+		Customer person = adminService.getCustomer(Integer.parseInt(id));
+		if(person == null) {
+			System.out.println("customerID does not exist");
+			return;
+		}
+		List<Account> list = adminService.seeAccounts(Integer.parseInt(id));
 		System.out.print(person);
 		for(Account a: list) {
 			System.out.println(a);
 		}
 	}
 	
+	/**
+	 * Sees pending investment accounts for review
+	 */
 	public void seePending() {
 		System.out.println("Here are the pending applications");
 		List<Account> list = adminService.seeAllAccounts();
@@ -106,50 +129,55 @@ public class AdminController {
 				System.out.println(a);
 			}	
 		}
-		System.out.println("1. Select an account to process\n"
-				         + "2. Go back to employee menu");
-		String next = scan.nextLine();
 		
-		switch(next) {
-			case "1":
-				approveOrDeny();
-				
-				break;
-			case "2":
-				adminMenu();
-			default:
-				System.out.println("Sorry wrong input");
-				seePending();
-		}
 			
 	}
 	
-	public void approveOrDeny() {
-		System.out.println("Select an account");
+	/**
+	 * Decides whether to move forward with the pending accounts
+	 */
+	public void decide() {
+		System.out.println("1. To process an application\n"
+				+ "2. Go back to admin menu");
+		String option = scan.nextLine();
 		
-		int id = scan.nextInt();
-		System.out.println("1. Approve\n"
-						 + "2. Deny");
-		String judgement = scan.nextLine();
-		switch(judgement) {
-			case "1":
-				adminService.processed(id, "approved");
-				adminMenu();
-				break;
-			case "2":
-				adminService.processed(id, "denied");
-				adminMenu();
-				break;
-			default:
-				System.out.println("Sorry they can't escape judgement");
-				approveOrDeny();
+		switch(option) {
+	    	case "1":
+	    		System.out.println("Enter an accountID to process their application");
+				String id = scan.nextLine();
+				System.out.println("Enter approve or deny");
+				String choice = scan.nextLine();
+				approveOrDeny(Integer.parseInt(id), choice);
+	    	case "2":
+	    		actions();
+	    	default:
+	    		decide();
 		}
 	}
 	
+	/**
+	 * Approves or denies application
+	 * @param id
+	 * @param answer
+	 */
+	public void approveOrDeny(int id, String answer) {
+		
+		
+		if(answer.equals("approve") || answer.equals("deny")) {
+			adminService.processed(id, answer);
+			
+		} else {
+			System.out.println("Sorry wrong input");
+		}
+	}
+	
+	/**
+	 * Manipulates customer accounts
+	 */
 	public void customerActions() {
 		System.out.println("Enter existing customerid to make transactions on their account");
-		int id = scan.nextInt();
-		Customer person = adminService.seeCustomer(id);
+		String id = scan.nextLine();
+		Customer person = adminService.getCustomer(Integer.parseInt(id));
 		
 		System.out.println("What would you like to do on their account?\n"
 		        		 + "1. Deposit an amount\n"
@@ -164,12 +192,16 @@ public class AdminController {
 			case "1":
 				accounttype = whichAccount(person);
 				money = amount();
-				customerService.deposit(person, accounttype, money);
+				if(!check(money)) {
+					customerService.deposit(person, accounttype, money);
+				}
 				break;
 			case "2":
 				accounttype = whichAccount(person);
 				money = amount();
-				customerService.withdraw(person, accounttype, money);
+				if(!check(money)) {
+					customerService.withdraw(person, accounttype, money);
+				}
 				break;
 			case "3":
 				System.out.print("To ");
@@ -177,7 +209,9 @@ public class AdminController {
 				System.out.print("From ");
 				String accounttype2 = whichAccount(person);
 				money = amount();
-				customerService.transfer(person, accounttype, accounttype2, money);
+				if(!check(money)) {
+					customerService.transfer(person, accounttype, accounttype2, money);
+				}
 				break;
 			case "4":
 				accounttype = whichAccount(person);
@@ -193,6 +227,11 @@ public class AdminController {
 			}
 	}
 	
+	/**
+	 * Returns an account type
+	 * @param person
+	 * @return
+	 */
 	public String whichAccount(Customer person) {
 		String option = "";
 		System.out.println("Which account?\n"
@@ -217,11 +256,27 @@ public class AdminController {
 		return option;
 	}
 	
+	/**
+	 * Returns an amount
+	 * @return
+	 */
 	public double amount() {
-		double money = 0;
 		System.out.println("How much?");
-		money = scan.nextDouble();
+		String money = scan.nextLine().trim();
+		return Double.parseDouble(money);
+	}
+	
+	/**
+	 * This checks if the amount is negative or not
+	 * @param isNegative
+	 * @return
+	 */
+	public boolean check(double isNegative) {
 		
-		return money;
+		if(isNegative < 0) {
+			System.out.println("amount can't be below 0");
+			return true;
+		}
+		return false;
 	}
 }

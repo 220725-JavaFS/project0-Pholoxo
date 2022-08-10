@@ -131,6 +131,33 @@ public class Customer {
 		return savings;
 	}
 
+	/**
+	 * This sets the savings account
+	 * @param savings
+	 */
+	public void setSavings(Account savings) {
+		this.savings = savings;
+	}
+	
+	/**
+	 * This returns the investment account
+	 * @return
+	 */
+	public Account getInvestment() {
+		return investment;
+	}
+
+	/**
+	 * This sets the investment account
+	 * @param investment
+	 */
+	public void setInvestment(Account investment) {
+		this.investment = investment;
+	}
+	
+	/**
+	 * This is the hash code method
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -144,9 +171,10 @@ public class Customer {
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
-
-
-
+	
+	/**
+	 * This is the equals method
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -191,32 +219,9 @@ public class Customer {
 		return true;
 	}
 
-
-
 	/**
-	 * This sets the savings account
-	 * @param savings
+	 * This is the tostring method that prints out its fields
 	 */
-	public void setSavings(Account savings) {
-		this.savings = savings;
-	}
-	
-	/**
-	 * This returns the investment account
-	 * @return
-	 */
-	public Account getInvestment() {
-		return investment;
-	}
-
-	/**
-	 * This sets the investment account
-	 * @param investment
-	 */
-	public void setInvestment(Account investment) {
-		this.investment = investment;
-	}
-
 	@Override
 	public String toString() {
 		return "Customer [customerID=" + customerID + ", name=" + name + ", password=" + password + ", username="

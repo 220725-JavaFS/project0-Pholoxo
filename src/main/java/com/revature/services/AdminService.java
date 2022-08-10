@@ -8,7 +8,11 @@ import com.revature.models.Account;
 import com.revature.models.Admin;
 import com.revature.models.Customer;
 
-
+/**
+ * This is the admin service class
+ * @author maxmorales
+ *
+ */
 public class AdminService {
 	private BankDAO bank = new BankDAOImpl();
 	
@@ -16,37 +20,69 @@ public class AdminService {
 		// empty constructor
 	}
 	
+	/**
+	 * This returns an admin and sees if they exist
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	public Admin getAdmin(String username, String password) {
 		Admin person = bank.getAdmin(username, password);
 		return person;
 	}
 	
+	/**
+	 * This return a list of customers
+	 * @return
+	 */
 	public List<Customer> seeAllCustomers() {
 		
 		return bank.getAllCustomers();
 	}
 	
+	/**
+	 * This returns a list of accounts
+	 * @return
+	 */
 	public List<Account> seeAllAccounts() {
 		return bank.getTotalAccounts();
 	}
 	
-	public Customer seeCustomer(int customerID) {
+	/**
+	 * This returns a customer by id
+	 * @param customerID
+	 * @return
+	 */
+	public Customer getCustomer(int customerID) {
 		return bank.getCustomerByID(customerID);
 	}
 	
+	/**
+	 * This sees all accounts of all customers
+	 * @param customerID
+	 * @return
+	 */
 	public List<Account> seeAccounts(int customerID) {
 		return bank.getAllAccounts(customerID);
 	}
 	
+	/**
+	 * This method processes an application
+	 * @param accountID
+	 * @param request
+	 */
 	public void processed(int accountID, String request) {
-		bank.processedApplication(accountID, request);
+		if(request.equals("approve")) {
+			bank.processedApplication(accountID, "open");
+			System.out.println("This account has been approved");
+		} else {
+			bank.processedApplication(accountID, "denied");
+			System.out.println("This account has been denied");
+		}
 	}
 	
-	public void getCustomerByID(int customerID) {
-		bank.getCustomerByID(customerID);
-	}
 	/**
-	 * This deletes an account
+	 * This closes an account of checking, savings, or investment
 	 */
 	public void closeAccount(Customer person, String accounttype) {
 		String warning = "This account is already closed";

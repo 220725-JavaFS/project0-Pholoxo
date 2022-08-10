@@ -15,12 +15,11 @@ import com.revature.utils.ConnectionUtil;
 public class BankDAOImpl implements BankDAO{
 
 	
-
 	@Override
 	public Admin getAdmin(String username, String password) {
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM admins WHERE username='" + username +
-					     "' AND PASSWORD = '" + password + "';";
+					     "' AND PASSWORD = crypt('" + password + "', password);";
 			
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -48,6 +47,7 @@ public class BankDAOImpl implements BankDAO{
 		return null;
 	}
 
+	
 	@Override
 	public Customer getCustomer(String username, String password) {
 		
@@ -93,13 +93,11 @@ public class BankDAOImpl implements BankDAO{
 		return null;
 	}
 	
-
-	
 	@Override
 	public Employee getEmployee(String username, String password) {
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM employees WHERE username='" + username +
-					     "' AND PASSWORD = '" + password + "';";
+					     "' AND PASSWORD = crypt('" + password + "', password);";
 			
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -133,7 +131,7 @@ public class BankDAOImpl implements BankDAO{
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM accounts WHERE customerid='" + String.valueOf(customerID) +
 					     "' AND accounttype = '" + accounttype + "';";
-			System.out.println(sql);
+			
 			Statement statement = conn.createStatement();
 			ResultSet result = statement.executeQuery(sql);
 			
@@ -154,7 +152,8 @@ public class BankDAOImpl implements BankDAO{
 		}
 		return null;
 	}
-
+	
+	@Override
 	public Customer getCustomerByID(int customerID) {
 		try(Connection conn = ConnectionUtil.getConnection()) {
 			String sql = "SELECT * FROM customers WHERE customerid='" + String.valueOf(customerID) + "';";
@@ -184,11 +183,7 @@ public class BankDAOImpl implements BankDAO{
 					}
 				}
 				return customer;
-			} else {
-				System.out.println("Wrong username or password");
-				CustomerController custom = new CustomerController();
-				custom.customerMenu();
-			}
+			} 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			
@@ -197,125 +192,6 @@ public class BankDAOImpl implements BankDAO{
 		return null;
 	}
 
-	@Override
-	public List<Admin> getAllAdmins() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Customer> getAllCustomers() {
-		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM customers";
-			
-			Statement statement = conn.createStatement();
-			ResultSet result = statement.executeQuery(sql);
-			
-			List<Customer> customerList = new LinkedList<Customer>();
-			
-			while(result.next()) { 
-				Customer customer = new Customer(
-						result.getInt("customerid"),
-						result.getString("name"),
-						result.getString("password"),
-						result.getString("password"),
-						null,
-						null,
-						null
-						);
-				List<Account> accountList = getAllAccounts(customer.getCustomerID());
-				for(Account a: accountList) {
-					if(a.getAccountType().equals("checking")) {
-						customer.setChecking(a);
-					}else if(a.getAccountType().equals("savings")) {
-						customer.setSavings(a);
-					}else if(a.getAccountType().equals("investment")) {
-						customer.setInvestment(a);
-					}
-				}
-				customerList.add(customer);
-				
-			}
-			
-			
-			return customerList;
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-		} 
-		return null;
-	}
-
-	@Override
-	public List<Employee> getAllEmployees() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Account> getAllAccounts(int customerID) {
-		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM accounts WHERE customerid='" + String.valueOf(customerID) + "';";
-			
-			Statement statement = conn.createStatement();
-			ResultSet result = statement.executeQuery(sql);
-			
-			List<Account> accountList = new LinkedList<Account>();
-			
-			while(result.next()) { 
-				Account account = new Account(
-						result.getInt("accountid"),
-						result.getInt("customerid"),
-						result.getString("accounttype"),
-						result.getString("status"),
-						result.getDouble("amount")
-						);
-				
-				accountList.add(account);
-				
-			}
-			
-			
-			return accountList;
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-		} 
-		return null;
-	}
-
-	public List<Account> getTotalAccounts() {
-		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM accounts";
-			
-			Statement statement = conn.createStatement();
-			ResultSet result = statement.executeQuery(sql);
-			
-			List<Account> accountList = new LinkedList<Account>();
-			
-			while(result.next()) { 
-				Account account = new Account(
-						result.getInt("accountid"),
-						result.getInt("customerid"),
-						result.getString("accounttype"),
-						result.getString("status"),
-						result.getDouble("amount")
-						);
-				
-				accountList.add(account);
-				
-			}
-			
-			
-			return accountList;
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-		} 
-		return null;
-	}
-	
-	
 	@Override
 	public void deposit(int customerID, String accounttype, double amount) {
 		try(Connection conn = ConnectionUtil.getConnection()){
@@ -431,8 +307,8 @@ public class BankDAOImpl implements BankDAO{
 			
 			String sql = "UPDATE accounts SET status = '" 
 					     + request + "' WHERE accountid = " 
-					     + String.valueOf(accountID) 
-					     + "';";
+					     + accountID 
+					     + ";";
 			PreparedStatement statement = conn.prepareStatement(sql);
 
 			
@@ -471,6 +347,123 @@ public class BankDAOImpl implements BankDAO{
 		
 	}
 	
-	
+	@Override
+	public List<Admin> getAllAdmins() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Customer> getAllCustomers() {
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM customers";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			List<Customer> customerList = new LinkedList<Customer>();
+			
+			while(result.next()) { 
+				Customer customer = new Customer(
+						result.getInt("customerid"),
+						result.getString("name"),
+						result.getString("password"),
+						result.getString("username"),
+						null,
+						null,
+						null
+						);
+				List<Account> accountList = getAllAccounts(customer.getCustomerID());
+				for(Account a: accountList) {
+					if(a.getAccountType().equals("checking")) {
+						customer.setChecking(a);
+					}else if(a.getAccountType().equals("savings")) {
+						customer.setSavings(a);
+					}else if(a.getAccountType().equals("investment")) {
+						customer.setInvestment(a);
+					}
+				}
+				customerList.add(customer);
+				
+			}
+			
+			
+			return customerList;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+
+	@Override
+	public List<Employee> getAllEmployees() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Account> getAllAccounts(int customerID) {
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts WHERE customerid='" + String.valueOf(customerID) + "';";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			List<Account> accountList = new LinkedList<Account>();
+			
+			while(result.next()) { 
+				Account account = new Account(
+						result.getInt("accountid"),
+						result.getInt("customerid"),
+						result.getString("accounttype"),
+						result.getString("status"),
+						result.getDouble("amount")
+						);
+				
+				accountList.add(account);
+				
+			}
+			
+			
+			return accountList;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}
+
+	@Override
+	public List<Account> getTotalAccounts() {
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM accounts";
+			
+			Statement statement = conn.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			
+			List<Account> accountList = new LinkedList<Account>();
+			
+			while(result.next()) { 
+				Account account = new Account(
+						result.getInt("accountid"),
+						result.getInt("customerid"),
+						result.getString("accounttype"),
+						result.getString("status"),
+						result.getDouble("amount")
+						);
+				
+				accountList.add(account);
+				
+			}
+			
+			
+			return accountList;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		} 
+		return null;
+	}		
 	
 }

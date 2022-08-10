@@ -8,12 +8,19 @@ import com.revature.models.Customer;
 import com.revature.models.Employee;
 import com.revature.services.EmployeeService;
 
-
+/**
+ * This is the employee class
+ * @author maxmorales
+ *
+ */
 public class EmployeeController {
 	private Scanner scan = new Scanner(System.in);
 	private MenuController menu = new MenuController();
 	private EmployeeService employeeService = new EmployeeService();
 	
+	/**
+	 * This is the employee menu
+	 */
 	public void employeeMenu() {
 		System.out.print("Enter your username: ");
 		String username = scan.nextLine();
@@ -25,6 +32,9 @@ public class EmployeeController {
 		actions();
 	}
 	
+	/**
+	 * This goes to the menu instructions
+	 */
 	public void actions() {
 		System.out.println("What would you like to do?\n"
        		 + "1. See total customer records\n"
@@ -48,18 +58,21 @@ public class EmployeeController {
 				break;
 			case "4":
 				seePending();
+				decide();
 				actions();
 				break;
 			case "5":
 				menu.mainMenu();
 				break;
-			
 			default:
 				System.out.println("Sorry that is not a valid input please try again. ");
 				actions();
 		}
 	}
 	
+	/**
+	 * This sees all customers
+	 */
 	public void seeCustomerRecords() {
 		List<Customer> list = employeeService.seeAllCustomers();
 		System.out.println("Here are the customer records");
@@ -67,8 +80,12 @@ public class EmployeeController {
 			System.out.println(a);
 			
 		}
+		System.out.println();
 	}
 	
+	/**
+	 * This sees all accounts
+	 */
 	public void seeAccountRecords() {
 		List<Account> list = employeeService.seeAllAccounts();
 		System.out.println("Here are all the financial accounts records");
@@ -77,18 +94,28 @@ public class EmployeeController {
 		}
 	}
 	
+	/**
+	 * This sees a customer and their accounts
+	 */
 	public void seeCustomerAndAccounts() {
 		System.out.println("Which customer and their accounts do you want to see? \n"
 				          + "Choose by customerid");
-		int id = scan.nextInt();
-		Customer person = employeeService.seeCustomer(id);
-		List<Account> list = employeeService.seeAccounts(id);
+		String id = scan.nextLine();
+		Customer person = employeeService.seeCustomer(Integer.parseInt(id));
+		if(person == null) {
+			System.out.println("customerID does not exist");
+			return;
+		}
+		List<Account> list = employeeService.seeAccounts(Integer.parseInt(id));
 		System.out.print(person);
 		for(Account a: list) {
 			System.out.println(a);
 		}
 	}
 	
+	/**
+	 * Sees pending applications
+	 */
 	public void seePending() {
 		System.out.println("Here are the pending applications");
 		List<Account> list = employeeService.seeAllAccounts();
@@ -98,43 +125,44 @@ public class EmployeeController {
 				System.out.println(a);
 			}	
 		}
-		System.out.println("1. Select an account to process\n"
-				         + "2. Go back to employee menu");
-		String next = scan.nextLine();
 		
-		switch(next) {
-			case "1":
-				approveOrDeny();
-				
-				break;
-			case "2":
-				employeeMenu();
-			default:
-				System.out.println("Sorry wrong input");
-				seePending();
-		}
 			
 	}
 	
-	public void approveOrDeny() {
-		System.out.println("Select an account");
+	/**
+	 * Decides to move forward on application
+	 */
+	public void decide() {
+		System.out.println("1. To process an application\n"
+				+ "2. Go back to employee menu");
+		String option = scan.nextLine();
 		
-		int id = scan.nextInt();
-		System.out.println("1. Approve\n"
-						 + "2. Deny");
-		String judgement = scan.nextLine();
-		switch(judgement) {
-			case "1":
-				employeeService.processed(id, "approved");
-				employeeMenu();
-				break;
-			case "2":
-				employeeService.processed(id, "denied");
-				employeeMenu();
-				break;
-			default:
-				System.out.println("Sorry they can't escape judgement");
-				approveOrDeny();
+		switch(option) {
+	    	case "1":
+	    		System.out.println("Enter an accountID to process their application");
+				String id = scan.nextLine();
+				System.out.println("Enter approve or deny");
+				String choice = scan.nextLine();
+				approveOrDeny(Integer.parseInt(id), choice);
+	    	case "2":
+	    		actions();
+	    	default:
+	    		decide();
+		}
+	}
+	
+	/**
+	 * approves or denies an account
+	 * @param id
+	 * @param answer
+	 */
+	public void approveOrDeny(int id, String answer) {	
+		
+		if(answer.equals("approve") || answer.equals("deny")) {
+			employeeService.processed(id, answer);
+			
+		} else {
+			System.out.println("Sorry wrong input");
 		}
 	}
 	

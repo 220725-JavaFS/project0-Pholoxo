@@ -5,6 +5,9 @@ import java.util.Scanner;
 public class MenuController {
 	private Scanner scan = new Scanner(System.in);
 	
+	/**
+	 * This is the main menu of the bank
+	 */
 	public void mainMenu() {
 		String choice = "";
 		
@@ -15,6 +18,8 @@ public class MenuController {
 							 + "\n 2. To register a new account"
 					         + "\n 3. To quit");
 			choice = scan.nextLine();
+			
+			//Will route you to which roles to pick
 			switch(choice) {
 			case "1":
 				System.out.println("What is your role?"
@@ -47,7 +52,7 @@ public class MenuController {
 				reg.register();
 				break;
 			case "3":
-				break;
+				choice = "3";
 			}
 		}
 	}

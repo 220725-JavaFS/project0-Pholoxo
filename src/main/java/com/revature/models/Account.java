@@ -89,7 +89,6 @@ public class Account {
 		this.amount = amount;
 	}
 
-
 	/**
 	 * This gets the status
 	 * @return
@@ -106,14 +105,19 @@ public class Account {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
+	/**
+	 * This is the tostring method that prints out its fields
+	 */
 	@Override
 	public String toString() {
 		return "Account [accountID=" + accountID + ", customerID=" + customerID + ", accountType=" + accountType
 				+ ", status=" + status + ", amount=" + amount + "]";
 	}	
 	
-
+	/**
+	 * This is the hashcode method
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,7 +131,10 @@ public class Account {
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		return result;
 	}
-
+	
+	/**
+	 * This is the equals method
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

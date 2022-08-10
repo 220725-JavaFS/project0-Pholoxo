@@ -84,13 +84,19 @@ public class Admin {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	/**
+	 * This is the tostring method that prints out its fields
+	 */
 	@Override
 	public String toString() {
 		return "Admin [adminID=" + adminID + ", name=" + name + ", password=" + password + ", username=" + username
 				+ "]";
 	}
-
+	
+	/**
+	 * This is the hashcode method
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -102,6 +108,9 @@ public class Admin {
 		return result;
 	}
 
+	/**
+	 * This is the equal methods
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

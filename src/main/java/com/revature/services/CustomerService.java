@@ -7,17 +7,24 @@ import com.revature.daos.BankDAO;
 import com.revature.daos.BankDAOImpl;
 import com.revature.models.*;
 
-
-
-
+/**
+ * This is the customer service class
+ * @author maxmorales
+ *
+ */
 public class CustomerService {
-	
-
 	private BankDAO bank = new BankDAOImpl();
+	
 	public CustomerService() {
 		// Empty Constructor
 	}
 	
+	/**
+	 * This returns a customer by username and password
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	public Customer getCustomer(String username, String password) {
 		Customer person = bank.getCustomer(username, password);
 		return person;
@@ -54,11 +61,8 @@ public class CustomerService {
 				bank.openAccount(person.getCustomerID(), accounttype);
 				System.out.println("Transaction processed successfully!"
 						         + "Your account is now pending for approval");
-			}
-			
+			}		
 		} 
-		
-		
 	}
 	
 	/**
@@ -72,6 +76,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				person.setChecking(null);
 				System.out.println("Transaction processed successfully!");
 			}
 			
@@ -81,6 +86,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				person.setSavings(null);
 				System.out.println("Transaction processed successfully!");
 			}
 			
@@ -90,6 +96,7 @@ public class CustomerService {
 				
 			} else {
 				bank.closeAccount(person.getCustomerID(), accounttype);
+				person.setInvestment(null);
 				System.out.println("Transaction processed successfully!");
 			}
 			
@@ -131,8 +138,10 @@ public class CustomerService {
 			}
 			
 		} else if(type.equals("investment")) {
-			if(person.getSavings() == null) {
-				System.out.println("There is no account of this type to deposit into");
+			if(person.getInvestment() == null || 
+			   person.getInvestment().getStatus().equals("pending")) {
+				System.out.println("There is no account of this type to deposit into"
+						         + "or it is still pending");
 			} else{
 				double first = person.getInvestment().getAmount();
 				double total = amount + first;
@@ -185,9 +194,9 @@ public class CustomerService {
 		} else if(type.equals("investment")) {
 			
 			if(person.getInvestment() == null ||
-			   !person.getInvestment().getStatus().equals("open")) {
+			   person.getInvestment().getStatus().equals("pending")) {
 				System.out.println("There is no account of this type to withdraw from"
-						+ " or the account is denied or not approved yet");
+						+ " or not approved yet");
 			} else {
 				double first = person.getInvestment().getAmount();
 				
@@ -209,13 +218,24 @@ public class CustomerService {
 	 * @param amount
 	 */
 	public void transfer(Customer person, String toAccount, String fromAccount, double amount) {
-		withdraw(person, fromAccount, amount);
-		deposit(person, toAccount, amount);
+		Account acc = bank.getAccountByID(person.getCustomerID(), toAccount);
+		Account acc2 = bank.getAccountByID(person.getCustomerID(), fromAccount);
+		System.out.println(acc.getStatus());
+		if(acc == null || acc.getStatus().equals("pending")) {
+			System.out.println("Sorry the " + toAccount + " doesn't exist or is still pending");
+		} else if(acc2 == null || acc2.getStatus().equals("pending")) {
+			System.out.println("Sorry the " + fromAccount + " doesn't exist or is still pending");
+		} else {
+			withdraw(person, fromAccount, amount);
+			deposit(person, toAccount, amount);
+		}
+		
+		
 		//SQL
 	}
 	
 	/**
-	 * This is a check
+	 * This is a check to see if the amount is greater that the account's total amount
 	 */
 	public boolean check(double total, double removed) {
 		if(removed > total) {
@@ -225,6 +245,11 @@ public class CustomerService {
 		return true;
 	}
 	
+	/**
+	 * sees their respective accounts
+	 * @param customerID
+	 * @return
+	 */
 	public List<Account> seeAccounts(int customerID) {
 		
 		return bank.getAllAccounts(customerID);

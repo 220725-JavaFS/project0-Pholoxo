@@ -11,7 +11,9 @@ public class CustomerController {
 	private MenuController menu = new MenuController();
 	private CustomerService customerService = new CustomerService();
 	
-	
+	/**
+	 * This is the customer menu to enter credentials
+	 */
 	public void customerMenu() {
 		System.out.print("Enter your username: ");
 		String username = scan.nextLine();
@@ -20,10 +22,17 @@ public class CustomerController {
 
 		Customer person = customerService.getCustomer(username, password);
 		
+		System.out.println();
 		seeAccounts(person);
+		System.out.println();
+		
 		actions(person);
 	}
 	
+	/**
+	 * This is cutomer menu to do actions on account
+	 * @param person
+	 */
 	public void actions(Customer person) {
 		System.out.println("What would you like to do?\n"
 		        		 + "1. Deposit an amount\n"
@@ -40,13 +49,19 @@ public class CustomerController {
 			case "1":
 				accounttype = whichAccount(person);
 				money = amount();
-				customerService.deposit(person, accounttype, money);
+				if(!check(money)) {
+					customerService.deposit(person, accounttype, money);
+				}
+			
 				actions(person);
 				break;
 			case "2":
 				accounttype = whichAccount(person);
 				money = amount();
-				customerService.withdraw(person, accounttype, money);
+				if(!check(money)) {
+					customerService.withdraw(person, accounttype, money);
+				}
+				
 				actions(person);
 				break;
 			case "3":
@@ -54,8 +69,11 @@ public class CustomerController {
 				accounttype = whichAccount(person);
 				System.out.print("From ");
 				String accounttype2 = whichAccount(person);
-				money = amount();	
-				customerService.transfer(person, accounttype, accounttype2, money);
+				money = amount();
+				if(!check(money)) {
+					customerService.transfer(person, accounttype, accounttype2, money);
+				}
+				
 				actions(person);
 				break;
 			case "4":
@@ -82,6 +100,11 @@ public class CustomerController {
 			}
 	}
 	
+	/**
+	 * This returns an account type
+	 * @param person
+	 * @return
+	 */
 	public String whichAccount(Customer person) {
 		String option = "";
 		System.out.println("Which account?\n"
@@ -106,6 +129,10 @@ public class CustomerController {
 		return option;
 	}
 	
+	/**
+	 * This returns an amount
+	 * @return
+	 */
 	public double amount() {
 		System.out.println("How much?");
 		String money = scan.nextLine().trim();
@@ -132,5 +159,19 @@ public class CustomerController {
 					break;
 			}
 		}
+	}
+	
+	/**
+	 * This checks if the amount is negative
+	 * @param isNegative
+	 * @return
+	 */
+	public boolean check(double isNegative) {
+		
+		if(isNegative < 0) {
+			System.out.println("amount can't be below 0");
+			return true;
+		}
+		return false;
 	}
 }
